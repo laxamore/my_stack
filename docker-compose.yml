@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  portainer:
+    image: portainer/portainer-ce:2.9.3
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer-data:/data
+  nginx:
+    image: nginx:1.22.0-alpine
+    hostname: nginx
+    container_name: nginx
+    restart: unless-stopped
+    environment:
+      - NGINX_HOST=mineralos.net
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    ports:
+      - 80:80
+  openvpn:
+    cap_add:
+      - NET_ADMIN
+    image: kylemanna/openvpn
+    container_name: openvpn
+    ports:
+      - "1194:1194/udp"
+    restart: always
+    volumes:
+      - ./openvpn-data/conf:/etc/openvpn
+volumes:
+  portainer-data:
