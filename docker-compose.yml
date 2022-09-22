@@ -21,5 +21,23 @@ services:
       - ./nginx/templates:/etc/nginx/templates
     ports:
       - 80:80
+  mariadb:
+    image: mariadb:10.9.3
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      # ROOT Password Only For Initialization Setup (Please Change After Running)
+      MARIADB_ROOT_PASSWORD: admin
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+  adminer:
+    image: adminer:4.8.1
+    container_name: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080
 volumes:
   portainer-data:
+  mariadb-data:
