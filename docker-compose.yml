@@ -38,26 +38,19 @@ services:
     restart: unless-stopped
     ports:
       - 8080:8080
-  filerun:
-    image: filerun/filerun
-    environment:
-      FR_DB_HOST: mariadb
-      FR_DB_PORT: 3306
-      APACHE_RUN_USER: www-data
-      APACHE_RUN_USER_ID: 33
-      APACHE_RUN_GROUP: www-data
-      APACHE_RUN_GROUP_ID: 33
-    depends_on:
-      - mariadb
-    links:
-      - mariadb:mariadb
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    restart: always
     ports:
-      - "8888:80"
+      - 8888:80
+    links:
+      - mariadb
     volumes:
-      - filerun-html:/var/www/html
-      - filerun-user-files:/user-files
+      - nextcloud:/var/www/html
+    environment:
+      - MYSQL_HOST=mariadb
 volumes:
   portainer-data:
   mariadb-data:
-  filerun-user-files:
-  filerun-html:
+  nextcloud:
