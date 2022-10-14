@@ -34,4 +34,4 @@ services:
     networks:
       - my_stack_default
     ports:
-      - ${SERVERPORT}:51820/udp
+      - 51820:51820/udp
