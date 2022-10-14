@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  db:
+    image: mariadb:10.9.3
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: ${NEXTCLOUD_DB_USER}
+      MARIADB_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
+      MARIADB_DATABASE: ${NEXTCLOUD_DB}
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+  nextcloud:
+    image: nextcloud
+    restart: unless-stopped
+    links:
+      - db
+    volumes:
+      - nextcloud:/var/www/html
+      - nextcloud-apps:/var/www/html/custom_apps
+      - nextcloud-config:/var/www/html/config
+      - nextcloud-data:/var/www/html/data
+      - nextcloud-themes:/var/www/html/themes
+    environment:
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
+      - MYSQL_DATABASE=${NEXTCLOUD_DB}
+      - MYSQL_USER=${NEXTCLOUD_DB_USER}
+      - MYSQL_HOST=db
+    # Uncomment This For Making It Visible On Local Port
+    # ports:
+    #  - 8000:80
+
+volumes:
+  nextcloud:
+  nextcloud-apps:
+  nextcloud-data:
+  nextcloud-config:
+  nextcloud-themes:
+  nextcloud-db:
