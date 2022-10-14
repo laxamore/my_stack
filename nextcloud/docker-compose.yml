@@ -14,7 +14,7 @@ volumes:
 
 
 services:
-  db:
+  nextcloud_db:
     image: mariadb:10.9.3
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
@@ -29,7 +29,7 @@ services:
     image: nextcloud
     restart: unless-stopped
     links:
-      - db
+      - nextcloud_db
     volumes:
       - nextcloud:/var/www/html
       - nextcloud-apps:/var/www/html/custom_apps
@@ -40,7 +40,7 @@ services:
       - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
       - MYSQL_DATABASE=${NEXTCLOUD_DB}
       - MYSQL_USER=${NEXTCLOUD_DB_USER}
-      - MYSQL_HOST=db
+      - MYSQL_HOST=nextcloud_db
     networks:
       - my_stack_default
     # Uncomment This For Making It Visible On Local Port
