@@ -1,5 +1,15 @@
 version: "3.7"
 
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  nginx-proxy-manager-data:
+  nginx-proxy-manager-db:
+  portainer-data:
+
+
 services:
   portainer:
     image: portainer/portainer-ce:2.15.1
@@ -12,6 +22,8 @@ services:
       - portainer-data:/data
     ports:
       - '9443:9443'
+    networks:
+      - default
 
   nginx-proxy-manager:
     image: 'jc21/nginx-proxy-manager:latest'
@@ -31,7 +43,9 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - db
-  
+    networks:
+      - default
+
   db:
     image: mariadb:10.9.3
     restart: unless-stopped
@@ -42,8 +56,5 @@ services:
       MARIADB_DATABASE: ${NGINX_PROXY_MANAGER_DB}
     volumes:
       - nginx-proxy-manager-db:/var/lib/mysql
-
-volumes:
-  nginx-proxy-manager-data:
-  nginx-proxy-manager-db:
-  portainer-data:
+    networks:
+      - default
