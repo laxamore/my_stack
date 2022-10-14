@@ -1,7 +1,7 @@
 version: "3.7"
 
 networks:
-  default:
+  my_stack_default:
     external: true
 
 volumes:
@@ -42,7 +42,7 @@ services:
       - MYSQL_USER=${NEXTCLOUD_DB_USER}
       - MYSQL_HOST=db
     networks:
-      - default
+      - my_stack_default
     # Uncomment This For Making It Visible On Local Port
     # ports:
     #  - 8000:80
