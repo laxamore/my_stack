@@ -25,6 +25,8 @@ services:
       MARIADB_DATABASE: ${NEXTCLOUD_DB}
     volumes:
       - nextcloud-db:/var/lib/mysql
+    networks:
+      - my_stack_default
   nextcloud:
     image: nextcloud
     restart: unless-stopped
