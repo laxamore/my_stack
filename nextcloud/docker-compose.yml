@@ -39,10 +39,10 @@ services:
       - nextcloud-data:/var/www/html/data
       - nextcloud-themes:/var/www/html/themes
     environment:
-      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
-      - MYSQL_DATABASE=${NEXTCLOUD_DB}
-      - MYSQL_USER=${NEXTCLOUD_DB_USER}
-      - MYSQL_HOST=nextcloud_db
+      MYSQL_USER: ${NEXTCLOUD_DB_USER}
+      MYSQL_PASSWORD: ${NEXTCLOUD_DB_PASSWORD}
+      MYSQL_DATABASE: ${NEXTCLOUD_DB}
+      MYSQL_HOST: nextcloud_db
     networks:
       - my_stack_default
     # Uncomment This For Making It Visible On Local Port
