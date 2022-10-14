@@ -46,5 +46,5 @@ services:
     networks:
       - my_stack_default
     # Uncomment This For Making It Visible On Local Port
-    # ports:
-    #  - 8000:80
+    ports:
+      - 8000:80
