@@ -1,0 +1,217 @@
+{
+	"apps": {
+		"http": {
+			"servers": {
+                "http_redirect": {
+                    "listen": [
+                        ":80"
+                    ],
+                    "routes": [
+                        {
+                            "match": [
+                                {
+                                    "host": [
+                                        "dashboard.NETMAKER_BASE_DOMAIN"
+                                    ]
+                                }
+                            ],
+                            "handle": [
+                                {
+                                    "handler": "rewrite",
+                                    "uri": "https://dashboard.NETMAKER_BASE_DOMAIN"
+                                }
+                            ]
+                        },
+                        {
+                            "match": [
+                                {
+                                    "host": [
+                                        "api.NETMAKER_BASE_DOMAIN"
+                                    ]
+                                }
+                            ],
+                            "handle": [
+                                {
+                                    "handler": "rewrite",
+                                    "uri": "https://api.NETMAKER_BASE_DOMAIN"
+                                }
+                            ]
+                        }
+                    ]
+                },
+				"netmaker-api": {
+                    "listen": [
+                        ":18081"
+                    ],
+					"routes": [
+                        {
+                            "match": [
+                                {
+                                    "host": [
+                                        "api.NETMAKER_BASE_DOMAIN"
+                                    ]
+                                }
+                            ],
+                            "handle": [
+                                {
+                                    "handler": "reverse_proxy",
+                                    "upstreams": [
+                                        {
+                                            "dial": "localhost:8081"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+					]
+				},
+                "netmaker-ui": {
+                    "listen": [
+                        ":18080"
+                    ],
+                    "routes": [
+                        {
+                            "match": [
+                                {
+                                    "host": [
+                                        "dashboard.NETMAKER_BASE_DOMAIN"
+                                    ]
+                                }
+                            ],
+                            "handle": [
+                                {
+                                    "handler": "reverse_proxy",
+                                    "upstreams": [
+                                        {
+                                            "dial": "localhost:8080"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+			}
+		},
+        "layer4": {
+            "servers": {
+                "netmaker": {
+                    "listen": [
+                        ":443"
+                    ],
+                    "routes": [
+                        {
+                            "match": [
+                                {
+                                    "tls": {}
+                                }
+                            ],
+                            "handle": [
+                                {
+                                    "handler": "subroute",
+                                    "routes": [
+                                        {
+                                            "match": [
+                                                {
+                                                    "tls": {
+                                                        "sni": [
+                                                            "broker.NETMAKER_BASE_DOMAIN"
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "handle": [
+                                                {
+                                                    "handler": "tls"
+                                                },
+                                                {
+                                                    "handler": "proxy",
+                                                    "upstreams": [
+                                                        {
+                                                            "dial": [
+                                                                "localhost:8883"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "match": [
+                                                {
+                                                    "tls": {
+                                                        "sni": [
+                                                            "api.NETMAKER_BASE_DOMAIN"
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "handle": [
+                                                {
+                                                    "handler": "proxy",
+                                                    "upstreams": [
+                                                        {
+                                                            "dial": [
+                                                                "localhost:18081"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "match": [
+                                                {
+                                                    "tls": {
+                                                        "sni": [
+                                                            "dashboard.NETMAKER_BASE_DOMAIN"
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "handle": [
+                                                {
+                                                    "handler": "proxy",
+                                                    "upstreams": [
+                                                        {
+                                                            "dial": [
+                                                                "localhost:18080"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                            
+                        }
+                    ]
+                }
+            }
+        },
+        "tls": {
+            "certificates": {
+                "automate": ["broker.NETMAKER_BASE_DOMAIN", "api.NETMAKER_BASE_DOMAIN", "dashboard.NETMAKER_BASE_DOMAIN"]
+            },
+            "automation": {
+                "policies": [
+                    {
+                        "subjects": [
+                            "api.NETMAKER_BASE_DOMAIN",
+                            "dashboard.NETMAKER_BASE_DOMAIN",
+                            "broker.NETMAKER_BASE_DOMAIN"
+                        ],
+                        "issuers": [
+                            {
+                                "module": "acme",
+                                "email": "YOUR_EMAIL"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+	}
+}

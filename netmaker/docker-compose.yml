@@ -1,0 +1,29 @@
+version: "3.9"
+
+volumes:
+  mosquitto_logs: {}
+
+services:
+  netmaker-ui:
+    container_name: netmaker-ui
+    image: gravitl/netmaker-ui:v0.16.3
+    restart: always
+    environment:
+      BACKEND_URL: "https://api.NETMAKER_BASE_DOMAIN"
+    ports:
+      - 8080:80
+  mq:
+    container_name: mq
+    image: eclipse-mosquitto:2.0.11-openssl
+    restart: unless-stopped
+    command: ["/mosquitto/config/wait.sh"]
+    environment:
+      NETMAKER_SERVER_HOST: "https://api.NETMAKER_BASE_DOMAIN"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./wait.sh:/mosquitto/config/wait.sh
+      - /etc/netmaker:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    ports:
+      - 1883:1883
+      - 8883:8883
