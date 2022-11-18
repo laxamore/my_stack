@@ -95,6 +95,12 @@ sed -i 's/NETMAKER_MASTER_KEY/<your master key>/g' netmaker.yaml
 sed -i 's/MQ_ADMIN_PASSWORD/<your mq password>/g' netmaker.yaml
 ```
 
+Update docker-compose.yml NETMAKER_BASE_DOMAIN placeholder with your domain.
+
+```bash
+sed -i 's/NETMAKER_BASE_DOMAIN/<your base domain>/g' docker-compose.yml
+```
+
 ## 6. Perpare Mosquitto
 
 Retrieve Mosquitto configuration file.
