@@ -106,7 +106,7 @@ wget -O mosquitto.conf https://raw.githubusercontent.com/gravitl/netmaker/v0.16.
 Retrieve Mosquitto start script.
 
 ```bash
-wget -q -O /root/wait.sh https://raw.githubusercontent.com/gravitl/netmaker/v0.16.3/docker/wait.sh
+wget -O wait.sh https://raw.githubusercontent.com/gravitl/netmaker/v0.16.3/docker/wait.sh
 chmod +x wait.sh
 ```
 
