@@ -226,6 +226,10 @@ docker-compose up -d
 
 Wait 1-2 minutes for caddy to resolve certs for the first time, and then you should be able to access the dashboard at https://dashboard.yourdomain.com.
 
+# Troubleshooting
+
+Some troubleshooting can be found [here](/netmaker/TROUBLESHOOTING.md)
+
 # Credits
 
 Netmaker https://github.com/gravitl/netmaker.
