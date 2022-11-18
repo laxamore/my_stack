@@ -169,15 +169,7 @@
                         "issuers": [
                             {
                                 "module": "acme",
-                                "email": "YOUR_EMAIL",
-                                "challenges": {
-                                    "dns": {
-                                        "provider": {
-                                            "name": "cloudflare",
-                                            "api_token": "CLOUDFLARE_API_TOKEN"
-                                        }
-                                    }
-                                }
+                                "email": "YOUR_EMAIL"
                             }
                         ]
                     }
