@@ -2,43 +2,6 @@
 	"apps": {
 		"http": {
 			"servers": {
-                "http_redirect": {
-                    "listen": [
-                        ":80"
-                    ],
-                    "routes": [
-                        {
-                            "match": [
-                                {
-                                    "host": [
-                                        "dashboard.NETMAKER_BASE_DOMAIN"
-                                    ]
-                                }
-                            ],
-                            "handle": [
-                                {
-                                    "handler": "rewrite",
-                                    "uri": "https://dashboard.NETMAKER_BASE_DOMAIN"
-                                }
-                            ]
-                        },
-                        {
-                            "match": [
-                                {
-                                    "host": [
-                                        "api.NETMAKER_BASE_DOMAIN"
-                                    ]
-                                }
-                            ],
-                            "handle": [
-                                {
-                                    "handler": "rewrite",
-                                    "uri": "https://api.NETMAKER_BASE_DOMAIN"
-                                }
-                            ]
-                        }
-                    ]
-                },
 				"netmaker-api": {
                     "listen": [
                         ":18081"
@@ -206,7 +169,15 @@
                         "issuers": [
                             {
                                 "module": "acme",
-                                "email": "YOUR_EMAIL"
+                                "email": "YOUR_EMAIL",
+                                "challenges": {
+                                    "dns": {
+                                        "provider": {
+                                            "name": "cloudflare",
+                                            "api_token": "CLOUDFLARE_API_TOKEN"
+                                        }
+                                    }
+                                }
                             }
                         ]
                     }

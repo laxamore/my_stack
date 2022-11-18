@@ -110,7 +110,17 @@ wget -q -O /root/wait.sh https://raw.githubusercontent.com/gravitl/netmaker/v0.1
 chmod +x wait.sh
 ```
 
-## 7. Install And Configure Caddy Reverse Proxy
+## 7. Perpare CoreDNS
+
+Disable systemd-resolved, for CoreDNS to be able to bind to port 53.
+
+```bash
+sudo systemctl disable systemd-resolved
+sudo systemctl stop systemd-resolved
+rm /etc/resolv.conf
+```
+
+## 8. Install And Configure Caddy Reverse Proxy
 
 Copy caddy-l4 binary included in this repository to /usr/sbin, or build it with xcaddy or download it from with l4 extra feaure [here](https://caddyserver.com/download)
 
@@ -148,7 +158,7 @@ ExecStart=/usr/sbin/caddy --config /etc/caddy/config.json
 WantedBy=multi-user.target
 ```
 
-## 8. Start Everything
+## 9. Start Everything
 
 Reload systemd daemon.
 
@@ -178,11 +188,8 @@ docker-compose up -d
 
 Wait 1-2 minutes for caddy to resolve certs for the first time, and then you should be able to access the dashboard at https://dashboard.yourdomain.com.
 
-# Disclaimer
-
-Wireguard is a registered trademark of Jason A. Donenfeld.
-
 # Credits
 
-Netmaker teams at https://github.com/gravitl/netmaker.
-Caddy Server teams at https://github.com/caddyserver/caddy.
+Netmaker https://github.com/gravitl/netmaker.
+CoreDNS https://github.com/coredns/coredns.
+Caddy Server https://github.com/caddyserver/caddy.

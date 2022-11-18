@@ -12,6 +12,17 @@ services:
       BACKEND_URL: "https://api.NETMAKER_BASE_DOMAIN"
     ports:
       - 8080:80
+  coredns:
+    container_name: coredns
+    image: coredns/coredns
+    command: -conf /root/dnsconfig/Corefile
+    restart: always
+    ports:
+      - "53:53/udp"
+      - "53:53"
+    volumes:
+      - /config/dnsconfig:/root/dnsconfig
+      - /etc/coredns/zones:/zones
   mq:
     container_name: mq
     image: eclipse-mosquitto:2.0.11-openssl
