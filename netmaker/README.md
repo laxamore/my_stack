@@ -128,10 +128,10 @@ rm /etc/resolv.conf
 
 ## 8. Install And Configure Caddy Reverse Proxy
 
-Copy caddy-l4 binary included in this repository to /usr/sbin, or build it with xcaddy or download it from with l4 extra feaure [here](https://caddyserver.com/download)
+Copy caddy-l4 binary included in this repository to /usr/bin, or build it with xcaddy or download it from with l4 extra feaure [here](https://caddyserver.com/download)
 
 ```bash
-sudo cp caddy/caddy-l4 /usr/sbin/caddy
+sudo cp caddy/caddy-l4 /usr/bin/caddy
 ```
 
 Create caddy directory & copy caddy configuration file.
@@ -150,18 +150,50 @@ sudo sed -i 's/YOUR_EMAIL/<your email>/g' /etc/caddy/config.json
 Create systemd service file. in /etc/systemd/system/caddy.service with the following configuration:
 
 ```bash
+# caddy.service
+#
+# For using Caddy with a config file.
+#
+# Make sure the ExecStart and ExecReload commands are correct
+# for your installation.
+#
+# See https://caddyserver.com/docs/install for instructions.
+#
+# WARNING: This service does not use the --resume flag, so if you
+# use the API to make changes, they will be overwritten by the
+# Caddyfile next time the service is restarted. If you intend to
+# use Caddy's API to configure it, add the --resume flag to the
+# `caddy run` command or use the caddy-api.service file instead.
+
 [Unit]
-Description=Caddy Reverse Proxy
-After=network.target
+Description=Caddy
+Documentation=https://caddyserver.com/docs/
+After=network.target network-online.target
+Requires=network-online.target
 
 [Service]
-Type=simple
-Restart=on-failure
-
-ExecStart=/usr/sbin/caddy --config /etc/caddy/config.json
+Type=notify
+User=caddy
+Group=caddy
+ExecStart=/usr/bin/caddy run --environ --config /etc/caddy/config.json
+ExecReload=/usr/bin/caddy reload --config /etc/caddy/config.json --force
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+LimitNPROC=512
+PrivateTmp=true
+ProtectSystem=full
+AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 [Install]
 WantedBy=multi-user.target
+```
+
+Create caddy user.
+
+```bash
+sudo useradd caddy
+sudo mkdir /home/caddy
+sudo chown caddy:caddy /home/caddy
 ```
 
 ## 9. Start Everything
